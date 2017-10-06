@@ -2,7 +2,7 @@ import json
 from os import listdir, path
 from os.path import isfile, join
 
-class Utils():
+class Utils:
     """ Utility class """
 
 

@@ -2,4 +2,4 @@ import sql_parser
 
 parser = sql_parser.SqlParser()
 
-parser.getDbRequests()
+parser.extractdbrequests()
