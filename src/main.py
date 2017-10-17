@@ -1,5 +1,7 @@
-import sql_parser
+import json_parser
 
-parser = sql_parser.SqlParser()
+parser = json_parser.JsonParser()
 
-parser.extractdbrequests()
+parser.extractfromjson()
+for (key, item) in parser.object_data.items():
+    print(item)

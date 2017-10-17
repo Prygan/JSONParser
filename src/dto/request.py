@@ -1,8 +1,9 @@
 
 class Request:
-    """ Class representing information about a SQL request"""
+    """ Parent class representing a HTTP or DB request """
 
-    def __init__(self, statement, duration):
-        self.__statement = statement
-        self.__duration = duration
-        print(duration) 
+    def __init__(self):
+        self.children = []
+    
+    def add_child(self, child):
+        self.children.append(child)
