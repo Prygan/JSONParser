@@ -33,28 +33,12 @@ class JsonParser:
         general_info = GeneralInfo(file_name = key)
         for (key, item) in json["stats"].items():
             general_info.add_stat(Stats(item["count"], item["duration"]), key)
-        self.extractdbrequests(json, general_info)
+        
+        for data in json["children"]:
+            self.explorechild(data, general_info)
+
         self.object_data[key] = general_info
 
-    def extractdbrequests(self, json, general_info):
-        for data in json["children"] :
-            info = data["info"]
-            date_format = "%Y-%m-%dT%H:%M:%S.%f"
-            start_time_str = info["meta.raw_payload.wsgi-start"]["timestamp"] 
-            stop_time_str = info["meta.raw_payload.wsgi-stop"]["timestamp"]
-            start_timestamp = datetime.strptime(start_time_str, date_format)
-            stop_timestamp = datetime.strptime(stop_time_str, date_format)
-            http_request = HTTPRequest( project = info["project"],\
-                                        host = info["host"], \
-                                        path = info["meta.raw_payload.wsgi-start"]["info"]["request"]["path"], \
-                                        scheme = info["meta.raw_payload.wsgi-start"]["info"]["request"]["scheme"], \
-                                        method = info["meta.raw_payload.wsgi-start"]["info"]["request"]["method"], \
-                                        query = info["meta.raw_payload.wsgi-start"]["info"]["request"]["query"], \
-                                        duration = str(stop_timestamp - start_timestamp))
-
-            for child in data["children"] :
-                self.explorechild(child, http_request)
-            general_info.add_child(http_request)
 
     def explorechild(self, child, request):
         info = child["info"]
@@ -74,7 +58,9 @@ class JsonParser:
                 host = host,
                 duration = str(stop_timestamp - start_timestamp),
                 params = params,
-                statement = statement
+                statement = statement,
+                parent_id = child["parent_id"],
+                trace_id = child["trace_id"]
             )
             request.add_child(db_request)
 
@@ -85,13 +71,15 @@ class JsonParser:
             stop_time_str = info["meta.raw_payload.wsgi-stop"]["timestamp"]
             start_timestamp = datetime.strptime(start_time_str, date_format)
             stop_timestamp = datetime.strptime(stop_time_str, date_format)
-            http_request = HTTPRequest( project = info["project"],\
-                                        host = info["host"], \
-                                        path = info["meta.raw_payload.wsgi-start"]["info"]["request"]["path"], \
-                                        scheme = info["meta.raw_payload.wsgi-start"]["info"]["request"]["scheme"], \
-                                        method = info["meta.raw_payload.wsgi-start"]["info"]["request"]["method"], \
-                                        query = info["meta.raw_payload.wsgi-start"]["info"]["request"]["query"], \
-                                        duration = str(stop_timestamp - start_timestamp))
+            http_request = HTTPRequest( project = info["project"],
+                                        host = info["host"],
+                                        path = info["meta.raw_payload.wsgi-start"]["info"]["request"]["path"],
+                                        scheme = info["meta.raw_payload.wsgi-start"]["info"]["request"]["scheme"],
+                                        method = info["meta.raw_payload.wsgi-start"]["info"]["request"]["method"],
+                                        query = info["meta.raw_payload.wsgi-start"]["info"]["request"]["query"],
+                                        duration = str(stop_timestamp - start_timestamp),
+                                        parent_id = child["parent_id"],
+                                        trace_id = child["trace_id"])
 
             for sub_child in child["children"]:
                 self.explorechild(sub_child, http_request)

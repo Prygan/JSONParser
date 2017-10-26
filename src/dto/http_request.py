@@ -3,8 +3,8 @@ from dto.request import Request
 class HTTPRequest(Request):
     """ Class encapsuling HTTP requests """
 
-    def __init__(self, project, host, path, scheme, method, query, duration):
-        super(HTTPRequest, self).__init__()
+    def __init__(self, project, host, path, scheme, method, query, duration, parent_id, trace_id):
+        super(HTTPRequest, self).__init__(parent_id, trace_id)
         self.project = project
         self.host = host
         self.path = path
