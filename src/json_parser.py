@@ -58,6 +58,7 @@ class JsonParser:
 
     def explorechild(self, child, request):
         info = child["info"]
+        date_format = "%Y-%m-%dT%H:%M:%S.%f"
         if "meta.raw_payload.db-start" in info:
             host = info["meta.raw_payload.db-start"]["info"]["host"]
             project = info["meta.raw_payload.db-start"]["project"]
@@ -65,8 +66,6 @@ class JsonParser:
             statement = info["meta.raw_payload.db-start"]["info"]["db"]["statement"]
             start_timestamp_str = info["meta.raw_payload.db-start"]["timestamp"]
             stop_timestamp_str = info["meta.raw_payload.db-stop"]["timestamp"]
-            
-            date_format = "%Y-%m-%dT%H:%M:%S.%f"
             start_timestamp = datetime.strptime(start_timestamp_str, date_format)
             stop_timestamp = datetime.strptime(stop_timestamp_str, date_format)
 
@@ -81,5 +80,21 @@ class JsonParser:
 
             for sub_child in child["children"]:
                 self.explorechild(sub_child, db_request)
+        else:
+            start_time_str = info["meta.raw_payload.wsgi-start"]["timestamp"] 
+            stop_time_str = info["meta.raw_payload.wsgi-stop"]["timestamp"]
+            start_timestamp = datetime.strptime(start_time_str, date_format)
+            stop_timestamp = datetime.strptime(stop_time_str, date_format)
+            http_request = HTTPRequest( project = info["project"],\
+                                        host = info["host"], \
+                                        path = info["meta.raw_payload.wsgi-start"]["info"]["request"]["path"], \
+                                        scheme = info["meta.raw_payload.wsgi-start"]["info"]["request"]["scheme"], \
+                                        method = info["meta.raw_payload.wsgi-start"]["info"]["request"]["method"], \
+                                        query = info["meta.raw_payload.wsgi-start"]["info"]["request"]["query"], \
+                                        duration = str(stop_timestamp - start_timestamp))
+
+            for sub_child in child["children"]:
+                self.explorechild(sub_child, http_request)
+            request.add_child(http_request)
 
             
