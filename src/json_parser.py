@@ -4,13 +4,12 @@ from datetime import datetime
 import re
 
 from dto.general_info import GeneralInfo
+from dto.stats import Stats
 
 from dto.component import Component
 from dto.database_component import DBComponent
 from dto.function_component import FunctionComponent
 from dto.http_component import HTTPComponent
-
-from dto.stats import Stats
 
 class JsonParser:
     """ Class used to parse Json files from openstack"""

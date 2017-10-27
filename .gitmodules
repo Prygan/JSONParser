@@ -1,3 +1,0 @@
-[submodule "SQLParser"]
-	path = SQLParser
-	url = https://github.com/Openstack-SQL/SQLParser
