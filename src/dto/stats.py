@@ -1,6 +1,7 @@
 
-class Stats:
-    """ Class containing stats information about """
+
+class Stats(object):
+    """Class containing stats information about """
 
     def __init__(self, name, count, duration):
         self.name = name

@@ -1,10 +1,13 @@
 from dto.component import Component
 
+
 class HTTPComponent(Component):
     types = ['wsgi']
 
-    def __init__(self, name, project, duration, parent_id, trace_id, host, path, scheme, method, query, ):
-        super(HTTPComponent, self).__init__(name, project, duration, parent_id, trace_id)
+    def __init__(self, name, project, duration, parent_id, trace_id,
+                 host, path, scheme, method, query, ):
+        super(HTTPComponent, self).__init__(name, project, duration,
+                                            parent_id, trace_id)
         self.host = host
         self.path = path
         self.scheme = scheme

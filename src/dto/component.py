@@ -1,4 +1,4 @@
-class Component:
+class Component(object):
     def __init__(self, name, project, duration, parent_id, trace_id):
         self.name = name
         self.project = project
@@ -6,7 +6,7 @@ class Component:
         self.children = []
         self.trace_id = trace_id
         self.parent_id = parent_id
-    
+
     def add_child(self, child):
         self.children.append(child)
 

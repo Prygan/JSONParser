@@ -1,15 +1,15 @@
-from dto.stats import Stats
 
-class GeneralInfo:
-    """ Class representing general information """
+
+class GeneralInfo(object):
+    """Class representing general information """
 
     def __init__(self, file_name):
         self.file_name = file_name
         self.stats = dict()
         self.children = []
 
-    def add_stat(self, stat, name):
-        self.stats[name] = stat
+    def add_stat(self, stat):
+        self.stats[stat.name] = stat
 
     def add_child(self, child):
         self.children.append(child)
