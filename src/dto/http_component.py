@@ -3,9 +3,8 @@ from dto.component import Component
 class HTTPComponent(Component):
     types = ['wsgi']
 
-    def __init__(self, project, host, path, scheme, method, query, name, service, duration, parent_id, trace_id):
-        super(HTTPComponent, self).__init__(name, service, duration, parent_id, trace_id)
-        self.project = project
+    def __init__(self, name, project, duration, parent_id, trace_id, host, path, scheme, method, query, ):
+        super(HTTPComponent, self).__init__(name, project, duration, parent_id, trace_id)
         self.host = host
         self.path = path
         self.scheme = scheme
@@ -13,15 +12,15 @@ class HTTPComponent(Component):
         self.query = query
 
     def __str__(self):
-        result = ""
-        result += 'HTTP_COMPONENT' + '\n'
-        result += self.project + '\n'
-        result += self.host + '\n'
-        result += self.path + '\n'
-        result += self.scheme + '\n'
-        result += self.method + '\n'
-        result += self.query + '\n'
-        result += self.duration + '\n'
+        result = "HTTP_COMPONENT" + "\n"
+
+        result += super(HTTPComponent, self).__str__()
+        result += "Host : " + self.host + "\n"
+        result += "Path : " + self.path + "\n"
+        result += "Scheme : " + self.scheme + "\n"
+        result += "Method : " + self.method + "\n"
+        result += "Query : " + self.query + "\n"
+
         for child in self.children:
-            result += str(child) + '\n'
+            result += child.__str__() + "\n"
         return result
