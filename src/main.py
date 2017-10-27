@@ -1,10 +1,9 @@
-import json_parser
+from json_parser import JsonParser
 
 
 def main():
-    parser = json_parser.JsonParser()
-
-    parser.extractfromjson()
+    parser = JsonParser()
+    parser.extract_from_json()
 
     for (key, item) in parser.object_data.items():
         print(item)

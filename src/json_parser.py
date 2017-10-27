@@ -19,21 +19,21 @@ class JsonParser(object):
 
     def __init__(self):
         self.util = Utils()
-        self.files = self.util.findfiles(self.files_directory)
+        self.files = self.util.find_files(self.files_directory)
         self.json_data = dict()
         self.object_data = dict()
         self.requests = []
-        self.initializejsondata()
+        self.initialize_jsondata()
 
-    def initializejsondata(self):
+    def initialize_jsondata(self):
         for file in self.files:
-            self.json_data[file] = (self.util.readjsonfile(file))
+            self.json_data[file] = (self.util.read_jsonfile(file))
 
-    def extractfromjson(self):
+    def extract_from_json(self):
         for (key, json) in self.json_data.items():
-            self.extractgeneralinfo(path.basename(key), json)
+            self.extract_generalinfo(path.basename(key), json)
 
-    def extractgeneralinfo(self, file, json):
+    def extract_generalinfo(self, file, json):
         general_info = GeneralInfo(file_name=file)
 
         for (key, item) in json["stats"].items():
@@ -44,18 +44,18 @@ class JsonParser(object):
                                   )
 
         for data in json["children"]:
-            self.explorechild(data, general_info)
+            self.explore_child(data, general_info)
 
         self.object_data[file] = general_info
 
-    def explorechild(self, child, parent):
+    def explore_child(self, child, parent):
         info = child["info"]
 
         keys = list(info.keys())
         service = ''
 
         for key in keys:
-            service = self.extractcomponentfrommeta(key)
+            service = self.extract_component_from_meta(key)
             if service:
                 break
 
@@ -64,7 +64,7 @@ class JsonParser(object):
 
             start = info["meta.raw_payload."+service+"-start"]["timestamp"]
             end = info["meta.raw_payload."+service+"-stop"]["timestamp"]
-            duration = self.parsetimestamp(start, end)
+            duration = self.parse_timestamp(start, end)
 
             trace_id = child["trace_id"]
             parent_id = child["parent_id"]
@@ -79,11 +79,14 @@ class JsonParser(object):
             )
 
             if service in DBComponent.types:
-                component = self.parsedatabasecomponent(general, service, info)
+                component = self.parse_database_component(general,
+                                                          service, info)
             elif service in FunctionComponent.types:
-                component = self.parsefunctioncomponent(general, service, info)
+                component = self.parse_function_component(general,
+                                                          service, info)
             elif service in HTTPComponent.types:
-                component = self.parsehttpcomponent(general, service, info)
+                component = self.parse_http_component(general,
+                                                      service, info)
             else:
                 raise ValueError("Key should exist in types")
 
@@ -93,16 +96,16 @@ class JsonParser(object):
             raise ValueError("No component found")
 
         for sub_child in child["children"]:
-            self.explorechild(sub_child, component)
+            self.explore_child(sub_child, component)
 
-    def parsetimestamp(self, start, end):
+    def parse_timestamp(self, start, end):
         date_format = "%Y-%m-%dT%H:%M:%S.%f"
         start_timestamp = datetime.strptime(start, date_format)
         end_timestamp = datetime.strptime(end, date_format)
 
         return str(end_timestamp - start_timestamp)
 
-    def extractcomponentfrommeta(self, string):
+    def extract_component_from_meta(self, string):
         result = ''
         found = search("meta.raw_payload.(.+?)-start", string)
         if found:
@@ -110,7 +113,7 @@ class JsonParser(object):
 
         return result
 
-    def parsedatabasecomponent(self, general, key, component):
+    def parse_database_component(self, general, key, component):
         db = component["meta.raw_payload." + key + "-start"]
         host = db["info"]["host"]
         params = db["info"]["db"]["params"]
@@ -129,7 +132,7 @@ class JsonParser(object):
 
         return db_component
 
-    def parsefunctioncomponent(self, general, key, component):
+    def parse_function_component(self, general, key, component):
 
         function = component["meta.raw_payload." + key + "-start"]["info"]\
                             ["function"]["name"]
@@ -145,7 +148,7 @@ class JsonParser(object):
 
         return fun_component
 
-    def parsehttpcomponent(self, general, key, component):
+    def parse_http_component(self, general, key, component):
         host = component["host"]
 
         request = component["meta.raw_payload." + key + "-start"]\
