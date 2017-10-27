@@ -5,9 +5,9 @@ class FunctionComponent(Component):
     types = ['compute_api', 'neutron_api', 'nova_image',
              'rpc', 'l3-agent', 'vif_driver']
 
-    def __init__(self, name, project, duration, parent_id, trace_id,
+    def __init__(self, module, project, duration, parent_id, trace_id,
                  function_call):
-        super(FunctionComponent, self).__init__(name, project, duration,
+        super(FunctionComponent, self).__init__(module, project, duration,
                                                 parent_id, trace_id)
         self.function_call = function_call
 

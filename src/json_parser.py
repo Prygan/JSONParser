@@ -52,18 +52,16 @@ class JsonParser(object):
         info = child["info"]
 
         keys = list(info.keys())
-        service = ''
+        module = ''
 
         for key in keys:
-            service = self.extract_component_from_meta(key)
-            if service:
+            module = self.extract_component_from_meta(key)
+            if module:
                 break
 
-        if service:
-            name = info["name"]
-
-            start = info["meta.raw_payload."+service+"-start"]["timestamp"]
-            end = info["meta.raw_payload."+service+"-stop"]["timestamp"]
+        if module:
+            start = info["meta.raw_payload."+module+"-start"]["timestamp"]
+            end = info["meta.raw_payload."+module+"-stop"]["timestamp"]
             duration = self.parse_timestamp(start, end)
 
             trace_id = child["trace_id"]
@@ -71,22 +69,22 @@ class JsonParser(object):
             project = info["project"]
 
             general = Component(
-                name=name,
+                module=module,
                 project=project,
                 duration=duration,
                 parent_id=parent_id,
                 trace_id=trace_id
             )
 
-            if service in DBComponent.types:
+            if module in DBComponent.types:
                 component = self.parse_database_component(general,
-                                                          service, info)
-            elif service in FunctionComponent.types:
+                                                          module, info)
+            elif module in FunctionComponent.types:
                 component = self.parse_function_component(general,
-                                                          service, info)
-            elif service in HTTPComponent.types:
+                                                          module, info)
+            elif module in HTTPComponent.types:
                 component = self.parse_http_component(general,
-                                                      service, info)
+                                                      module, info)
             else:
                 raise ValueError("Key should exist in types")
 
@@ -120,7 +118,7 @@ class JsonParser(object):
         statement = db["info"]["db"]["statement"]
 
         db_component = DBComponent(
-            name=general.name,
+            module=general.module,
             project=general.project,
             duration=general.duration,
             parent_id=general.parent_id,
@@ -138,7 +136,7 @@ class JsonParser(object):
                             ["function"]["name"]
 
         fun_component = FunctionComponent(
-            name=general.name,
+            module=general.module,
             project=general.project,
             duration=general.duration,
             parent_id=general.parent_id,
@@ -160,7 +158,7 @@ class JsonParser(object):
         query = request["query"]
 
         http_component = HTTPComponent(
-            name=general.name,
+            module=general.module,
             project=general.project,
             duration=general.duration,
             parent_id=general.parent_id,

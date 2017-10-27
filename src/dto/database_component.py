@@ -4,9 +4,9 @@ from dto.component import Component
 class DBComponent(Component):
     types = ['db', 'neutron.db']
 
-    def __init__(self, name, project, duration, parent_id, trace_id,
+    def __init__(self, module, project, duration, parent_id, trace_id,
                  host, params, statement,):
-        super(DBComponent, self).__init__(name, project, duration,
+        super(DBComponent, self).__init__(module, project, duration,
                                           parent_id, trace_id)
         self.host = host
         self.params = params
