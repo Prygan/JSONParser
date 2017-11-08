@@ -11,8 +11,6 @@ from dto.general_info import GeneralInfo
 from dto.http_component import HTTPComponent
 from dto.stats import Stats
 
-from SQLParser.SqlReport import SqlReport
-
 
 class JsonParser(object):
     """Class used to parse Json files from openstack"""
@@ -129,9 +127,6 @@ class JsonParser(object):
             params=params,
             statement=statement
         )
-
-        report = SqlReport()
-        report.report([db_component.statement])
 
         return db_component
 
