@@ -1,5 +1,5 @@
 from json_parser import JsonParser
-
+import time
 
 def main():
     parser = JsonParser()
@@ -9,4 +9,6 @@ def main():
     #     print(item)
 
 if __name__ == "__main__":
+    start_time = time.time()
     main()
+    print("--- %s seconds ---" % (time.time() - start_time))

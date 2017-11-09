@@ -5,7 +5,7 @@ class HTTPComponent(Component):
     types = ['wsgi']
 
     def __init__(self, module, project, duration, parent_id, trace_id,
-                 host, path, scheme, method, query, ):
+                 host, path, scheme, method, query):
         super(HTTPComponent, self).__init__(module, project, duration,
                                             parent_id, trace_id)
         self.host = host
