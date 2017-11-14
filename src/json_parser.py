@@ -11,11 +11,17 @@ from dto.general_info import GeneralInfo
 from dto.http_component import HTTPComponent
 from dto.stats import Stats
 
+from SQLParser.SqlReport import SqlReport
+from SQLParser.SqlReportProcessor import SqlReportProcessor
+
 
 class JsonParser(object):
     """Class used to parse Json files from openstack"""
     dir_path = path.dirname(path.realpath(__file__))
     files_directory = dir_path + '/../files/'
+    sqlreportprocessor = SqlReportProcessor()
+    nb_joins = 0
+    nb_transactions = 0
 
     def __init__(self):
         self.util = Utils()
@@ -47,6 +53,9 @@ class JsonParser(object):
             self.explore_child(data, general_info)
 
         self.object_data[file] = general_info
+        print("Total joins : " + str(self.nb_joins))
+        print("Total transactions : " + str(self.nb_transactions))
+        print(general_info.__str__())
 
     def explore_child(self, child, parent):
         info = child["info"]
@@ -116,6 +125,10 @@ class JsonParser(object):
         host = db["info"]["host"]
         params = db["info"]["db"]["params"]
         statement = db["info"]["db"]["statement"]
+        sql_stats = self.sqlreportprocessor.report(statement)
+
+        self.nb_joins += sql_stats.nb_join
+        self.nb_transactions += sql_stats.nb_transac
 
         db_component = DBComponent(
             module=general.module,
@@ -123,6 +136,7 @@ class JsonParser(object):
             duration=general.duration,
             parent_id=general.parent_id,
             trace_id=general.trace_id,
+            sql_stats=sql_stats,
             host=host,
             params=params,
             statement=statement
