@@ -2,30 +2,27 @@
 from datetime import datetime
 from os import path
 from re import search
-from utils import Utils
+from JsonParser.utils import read_jsonfile
 
-from dto.component import Component
-from dto.database_component import DBComponent
-from dto.function_component import FunctionComponent
-from dto.general_info import GeneralInfo
-from dto.http_component import HTTPComponent
-from dto.stats import Stats
+from JsonParser.dto.component import Component
+from JsonParser.dto.database_component import DBComponent
+from JsonParser.dto.function_component import FunctionComponent
+from JsonParser.dto.general_info import GeneralInfo
+from JsonParser.dto.http_component import HTTPComponent
+from JsonParser.dto.stats import Stats
 
-from SQLParser.SqlReport import SqlReport
-from SQLParser.SqlReportProcessor import SqlReportProcessor
+from SqlAnalyzer.SqlReport import SqlReport
+from SqlAnalyzer.SqlReportProcessor import SqlReportProcessor
 
 
 class JsonParser(object):
     """Class used to parse Json files from openstack"""
-    dir_path = path.dirname(path.realpath(__file__))
-    files_directory = dir_path + '/../files/'
     sqlreportprocessor = SqlReportProcessor()
     nb_joins = 0
     nb_transactions = 0
 
-    def __init__(self):
-        self.util = Utils()
-        self.files = self.util.find_files(self.files_directory)
+    def __init__(self, files):
+        self.files = files
         self.json_data = dict()
         self.object_data = dict()
         self.requests = []
@@ -33,7 +30,7 @@ class JsonParser(object):
 
     def initialize_jsondata(self):
         for file in self.files:
-            self.json_data[file] = (self.util.read_jsonfile(file))
+            self.json_data[file] = (read_jsonfile(file))
 
     def extract_from_json(self):
         for (key, json) in self.json_data.items():

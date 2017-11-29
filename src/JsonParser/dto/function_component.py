@@ -1,4 +1,4 @@
-from dto.component import Component
+from JsonParser.dto.component import Component
 
 
 class FunctionComponent(Component):

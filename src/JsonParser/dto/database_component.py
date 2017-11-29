@@ -1,5 +1,5 @@
-from dto.component import Component
-from SQLParser.SqlReport import SqlReport
+from JsonParser.dto.component import Component
+from SqlAnalyzer.SqlReport import SqlReport
 
 class DBComponent(Component):
     types = ['db', 'neutron.db']
