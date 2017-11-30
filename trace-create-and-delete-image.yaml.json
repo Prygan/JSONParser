@@ -167,7 +167,7 @@
                 "host": "parasilo-26-kavlan-5.rennes.grid5000.fr",
                 "db": {
                   "params": {},
-                  "statement": "SELECT name FROM (SELECT name FROM agentinformation)"
+                  "statement": "SELECT 1"
                 },
                 "service": null
               },

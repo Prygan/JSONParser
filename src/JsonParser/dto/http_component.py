@@ -13,6 +13,7 @@ class HTTPComponent(Component):
         self.scheme = scheme
         self.method = method
         self.query = query
+        self.labelForChart = module + " : " + method + " - " + path
 
     def __str__(self):
         result = "HTTP_COMPONENT" + "\n"

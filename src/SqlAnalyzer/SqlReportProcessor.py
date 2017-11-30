@@ -32,6 +32,7 @@ class SqlReportProcessor:
 
         report.nb_join += metrics.howManyJoins()
         report.nb_transac += metrics.howManyTransactions()
+        report.is_compound_select += metrics.isCompoundSelect()
         self.generalReport.mergeReport(report)
         return report
 
