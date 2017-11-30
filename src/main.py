@@ -2,6 +2,7 @@ import argparse
 import sys
 from JsonParser.json_parser import JsonParser 
 from JsonParser.utils import is_file, is_readable, find_files
+from dashboard import generate_dashboard
 
 def get_files(files): 
     ok = True 
@@ -28,66 +29,6 @@ def parse_files(files):
 
 
 
-
-
-def show_dashboard(parser_object_data):
-    # FIG 1
-    elements = parser_object_data.children
-    labels = list(map(lambda x: x.labelForChart,elements))
-    nb = list(map(getHowManyJoinsChildrenIncluded, elements))
-
-    elements = parser_object_data.children
-    labels = list(map(lambda x: x.labelForChart[:40],elements))
-    nb = list(map(getHowManyJoinsChildrenIncluded, elements))
-
-    trace1 = go.Pie(labels=labels, values=nb)
-
-    # FIG 2
-    elements = parser_object_data.children
-    vals = {}
-    for e in elements:
-        vals = dict(Counter(vals) + Counter(getHowManyJoinsForModules(e)))
-
-    projects = list(vals.keys())
-    nb = list(vals.values())
-
-    trace2 = go.Pie(labels=projects, values=nb)
-
-    fig = tools.make_subplots(rows=1, cols=2)
-    fig.append_trace(trace1, 1, 1)
-    fig.append_trace(trace2, 1, 2)
-    plot(fig, filename='dashboard.html')
-    
-def getHowManyJoinsChildrenIncluded(element):
-    res = 0
-    if(isinstance(element, DBComponent)):
-        res = res + element.sql_stats.nb_join
-    if(element.children != []):
-        for c in element.children:
-            res = res + getHowManyJoinsChildrenIncluded(c)
-    return res
-
-def getHowManyJoins(element):
-    res = 0
-    if(isinstance(element, DBComponent)):
-        res = res + element.sql_stats.nb_join
-    return res
-
-def getHowManyJoinsForModules(element):
-    res = {}
-    if(element.project in res):
-        res[element.project] += getHowManyJoins(element)
-    else:
-        res[element.project] = getHowManyJoins(element)
-    for c in element.children:
-        res = dict(Counter(res) + Counter(getHowManyJoinsForModules(c)))
-    return res
- 
-
-
-
-
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     group = parser.add_mutually_exclusive_group()
@@ -109,4 +50,4 @@ if __name__ == "__main__":
     if not args.no_dashboard:
         for key in parser.object_data.keys():
             print('--- Dashboard for file ' + key + ' ---\n')
-            show_dashboard(parser.object_data[key])
+            generate_dashboard(parser.object_data[key])
