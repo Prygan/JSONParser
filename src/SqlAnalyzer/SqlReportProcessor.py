@@ -1,6 +1,6 @@
 import sys
-from SqlAnalyzer.SqlReport import SqlReport
 from antlr4 import *
+from SqlAnalyzer.SqlReport import SqlReport
 from SqlAnalyzer.parser.SqlLexer import SqlLexer
 from SqlAnalyzer.parser.SqlParser import SqlParser
 from SqlAnalyzer.parser.SqlListener import SqlListener
