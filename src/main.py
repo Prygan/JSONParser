@@ -47,7 +47,8 @@ if __name__ == "__main__":
         sys.exit(0)
 
     parser = parse_files(files)
-    if not args.no_dashboard:
-        for key in parser.object_data.keys():
-            print('--- Dashboard for file ' + key + ' ---\n')
-            generate_dashboard(parser.object_data[key])
+    parser.persist("../output/parsed/")
+    #if not args.no_dashboard:
+    #    for key in parser.object_data.keys():
+    #        print('--- Dashboard for file ' + key + ' ---\n')
+    #        generate_dashboard(parser.object_data[key])

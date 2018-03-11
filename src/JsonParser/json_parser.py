@@ -3,6 +3,7 @@ from datetime import datetime
 from os import path
 from re import search
 from JsonParser.utils import read_jsonfile
+import json
 
 from JsonParser.dto.component import Component
 from JsonParser.dto.database_component import DBComponent
@@ -10,6 +11,7 @@ from JsonParser.dto.function_component import FunctionComponent
 from JsonParser.dto.general_info import GeneralInfo
 from JsonParser.dto.http_component import HTTPComponent
 from JsonParser.dto.stats import Stats
+from JsonParser.dto.dto_encoder import DTOEncoder
 
 from SqlAnalyzer.SqlReport import SqlReport
 from SqlAnalyzer.SqlReportProcessor import SqlReportProcessor
@@ -27,6 +29,11 @@ class JsonParser(object):
         self.object_data = dict()
         self.requests = []
         self.initialize_jsondata()
+
+    def persist(self, output_dir):
+        for key in self.object_data.keys():
+            with open(output_dir + key + ".parsed", "w") as parsed_file:
+                parsed_file.write(json.dumps(self.object_data[key], cls=DTOEncoder, indent=4))
 
     def initialize_jsondata(self):
         for file in self.files:
